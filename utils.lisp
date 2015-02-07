@@ -250,7 +250,7 @@
                 (apply #'rmapcar fn args))
              args)))
 
-;; Strings and symbols
+;; Strings and symbols:
 
 (defun mkstr (&rest args)
   "Builds a string by concatenating the printed versions of the given args."
@@ -273,3 +273,150 @@
   (map 'list
        (λ (c) (intern (make-string 1 :initial-element c)))
        (symbol-name sym)))
+
+;;; Function manipulation:
+
+(defvar *!equivs* (make-hash-table)
+  "A hash table containing functions with their destructive counterparts.")
+
+(defun ! (fn)
+  "Get the destructive version of fn. If there is no destructive version of fn,
+   fn is returned."
+  (or (gethash fn *!equivs*) fn))
+
+(defun def! (fn fn!)
+  "Register a function (fn) with its destructive counterpart (fn!)."
+  (setf (gethash fn *!equivs*) fn!))
+
+(defun memoize (fn)
+  "Caches and returns the result of calls to fn.
+   Unique calls to fn are stored in a hash table and returned when found.
+   Lookups are done using #'equal.
+   Note that multiple return values are not handled."
+  (let ((cache (make-hash-table :test #'equal)))
+    (λ (&rest args)
+       (multiple-value-bind (val win) (gethash args cache)
+         (if win
+             val
+             (setf (gethash args cache) (apply fn args)))))))
+
+(defun compose (&rest fns)
+  "Returns a function which is a composition of the given functions.
+   The last given fucntion is called first, and the first one given called
+   last.
+   All the given functions must take one argument except the last, which has
+   no restrictions. Whatever arguments the last given function takes, so will
+   the composed function."
+  (if fns
+      (let ((fn1 (car (last fns)))
+            (fns (butlast fns)))
+        (λ (&rest args)
+           (reduce #'funcall fns
+                   :from-end t
+                   :initial-value (apply fn1 args))))
+      #'identity))
+
+(defun fif (if then &optional else)
+  "fif stands for 'function if'. It encapsulates the pattern:
+   'if x then y else z'."
+  (λ (x)
+     (if (funcall if x)
+         (funcall then x)
+         (if else (funcall else x)))))
+
+(defun finter (fn &rest fns)
+  "finter stands for 'function intersection'. It builds a function that
+   essentially computes the intersection of some value across a set of
+   functions."
+  (if (null fns)
+      fn
+      (let ((chain (apply #'finter fns)))
+        (λ (x) (and (funcall fn x) (funcall chain x))))))
+
+(defun funion (fn &rest fns)
+  "funion stands for 'function union'. It builds a function that essentially
+   computes the union of some value across a set of functions."
+  (if (null fns)
+    fn
+    (let ((chain (apply #'funion fns)))
+      (λ (x) (or (funcall fn x) (funcall chain x))))))
+
+(defun lrec (rec &optional base)
+  "lrec stands for 'list recurser'.
+   It encapsulates the pattern of recursing down the cdrs of a list.
+   rec: a function that takes two arguments. The first arg is the current car
+   of the list. The second arg is a function which can be called to continue
+   the recursion.
+   base: a function or value. If a function it returns the base value. If a
+   a value, it is the base value itself.
+   Note: Graham warns that this will not yield a fast implementation as it
+   won't result in tail-recursion. Use this for prototyping or where speed is
+   not critical.
+   Some example uses:
+   * copy list:
+     * (lrec (λ (x f) (cons x (funcall f))))
+   * remove duplicates:
+     * (lref (λ (x f) (adjoin x (funcall f))))
+   * find-if for some function fn
+     * (lref (λ (x f) (if (fn x) x (funcall f))))
+   * some, for some function fn
+     * (lref (λ (x f) (or (fn x) (funcall f))))"
+  (labels ((self (lst)
+             (if (null lst)
+                 (if (functionp base)
+                     (funcall base)
+                     base)
+                 (funcall rec (car lst)
+                              (λ () (self (cdr lst)))))))
+    #'self))
+
+(defun ttrav (rec &optional (base #'identity))
+  "ttrav stands for 'tree traverser'.
+   It encapsulates the pattern of recursing through a list, including
+   sub-lists, i.e. trees. Note that ttrav always traverses then entire tree.
+   rec: a function that takes two arguments. The first arg is the returned
+   function applied to the current car of the list. The second arg is a
+   function that is applied to the cdr of the list.
+   base: a function or value. If a function it returns the base value, given
+   the tree (which would be an atom). If a value, it is the base value itself.
+   Some example uses:
+   * tree copy:
+     * (ttrav #'cons)
+   * count leaves:
+     * (ttrav (λ (l r) (+ l (or r 1))) 1)
+   * flatten:
+     * (ttrav #'nconc #'mklist)"
+  (labels ((self (tree)
+             (if (atom tree)
+               (if (functionp base)
+                   (funcall base tree)
+                   base)
+                 (funcall rec (self (car tree))
+                              (if (cdr tree)
+                                  (self (cdr tree)))))))
+    #'self))
+
+(defun trec (rec &optional (base #'identity))
+  "trec stands for 'tree recurser'.
+   It is a more general version of ttrav than supports the ability to not have
+   to traverse the entire tree.
+   rec: a function that takes three arguments. The first arg is the current
+   object in the tree. The second arg is the recursion of the 'left side' of
+   the tree. The third arg is the recursion of the 'right side' of the tree.
+   Some example uses:
+   * flatten:
+     * (trec (λ (o l r) (nconc (funcall l) (funcall r)))
+             #'mklist)
+   * rfind-if using oddp:
+     * (trec (λ (o l r) (or (funcall l) (funcall r)))
+             (λ (tree) (and (oddp tree) tree)))"
+  (labels
+    ((self (tree)
+       (if (atom tree)
+           (if (functionp tree)
+               (funcall base tree)
+               base)
+           (funcall rec tree
+                        (λ () (self (car tree)))
+                        (λ () (if (cdr tree) (self (cdr tree))))))))
+    #'self))
