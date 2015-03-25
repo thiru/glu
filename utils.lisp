@@ -1,4 +1,4 @@
-;; TODO: Find a way to ensure that this only gets called once...
+;; TODO: Find a way to ensure that this only gets called once
 (defun λ-reader (stream char)
   "Allow the character 'λ' to be used in place of the word 'lambda', for
    brevity's sake."
@@ -63,7 +63,7 @@
 
 (defun group (source n)
   "Groups items in source into groups of size n."
-  (if (zerop n) (error "zero length"))
+  (if (<= n 0) (error "n (group size) must be positive"))
   (labels ((rec (source acc)
              (let ((rest (nthcdr n source)))
                (if (consp rest)
