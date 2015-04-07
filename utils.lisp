@@ -1,3 +1,5 @@
+(in-package :utils)
+
 ;; TODO: Find a way to ensure that this only gets called once
 (defun λ-reader (stream char)
   "Allow the character 'λ' to be used in place of the word 'lambda', for
