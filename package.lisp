@@ -1,6 +1,6 @@
 ;;;; Utils package definitions
 
-(defpackage :utils
+(defpackage :glu
   (:use :cl)
   (:export :*english-list*
            :last1

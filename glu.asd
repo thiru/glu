@@ -1,6 +1,6 @@
 ;;;; Utils build configuration
 
-(asdf:defsystem :utils
+(asdf:defsystem :glu
   :version "0.1"
   :description "Utilities based on On Lisp, Let Over Lambda, etc."
   :author "Thirushanth Thirunavukarasu <thiru0130@gmail.com>"
@@ -10,5 +10,5 @@
                (:static-file "LICENSE")
                (:static-file "EULA")
                (:file "package")
-               (:file "utils")))
+               (:file "glu")))
 

@@ -1,4 +1,4 @@
-(in-package :utils)
+(in-package :glu)
 
 (defvar λ-reader-initialized nil)
 (unless λ-reader-initialized
