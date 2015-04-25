@@ -1,21 +1,20 @@
 (in-package :glu)
 
-(defvar λ-reader-initialized nil)
-(unless λ-reader-initialized
+(defvar lambda-symbol-defined nil)
+(unless lambda-symbol-defined
   (labels ((λ-reader (stream char)
              "Allow the character 'λ' to be used in place of the word 'lambda',
               for brevity's sake."
              (declare (ignore char stream))
              'LAMBDA))
     (set-macro-character #\λ #'λ-reader)
-    (setf λ-reader-initialized t)))
+    (setf lambda-symbol-defined t)))
 
 (defparameter *english-list*
   "~{~#[~;~a~;~a and ~a~:;~@{~a~#[~; and ~:;, ~]~}~]~}"
   "A control string to format a list of items in a friendly manner.
    E.g. '1 and 2', or '1, 2 and 3'.
    This was taken from PCL.")
-
 
 ;;; The following functions are based on, or taken directly from Paul Graham's
 ;;; On Lisp.
