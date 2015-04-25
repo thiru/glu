@@ -77,7 +77,7 @@
 
 (defun flatten (x)
   "Makes x into a flat list, removing any potentially nested lists.
-   If x is not a list it is turned into one."
+   If x is not a list it's turned into one."
   (labels ((rec (x acc)
              (cond ((null x) acc)
                    ((atom x) (cons x acc))
