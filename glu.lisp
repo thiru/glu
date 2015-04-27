@@ -423,3 +423,10 @@
                         (λ () (self (car tree)))
                         (λ () (if (cdr tree) (self (cdr tree))))))))
     #'self))
+
+;; Taken from PCL
+(defmacro labeled-time (form)
+  "Shows timing info via (time), prefixed with the form it's called for."
+  `(progn
+    (format *trace-output* "~2&~a" ',form)
+    (time ,form)))
