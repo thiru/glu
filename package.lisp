@@ -42,4 +42,9 @@
            :funion
            :lrec
            :ttrav
-           :trec))
+           :trec
+           :g!-symbol?
+           :defmacro/g!
+           :o!-symbol?
+           :o!-to-g!-symbol
+           :defmacro!))

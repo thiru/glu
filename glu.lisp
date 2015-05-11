@@ -430,3 +430,63 @@
   `(progn
     (format *trace-output* "~2&~a" ',form)
     (time ,form)))
+
+;; Taken from Let Over Lambda
+(defun g!-symbol? (s)
+  "Determine whether s is a 'g-bang' symbol.
+   A g-bang symbol is a symbol that starts with 'G!' and is at least 3
+   characters long."
+  (and (symbolp s)
+       (> (length (symbol-name s)) 2)
+       (string= (symbol-name s)
+                "G!"
+                :start1 0
+                :end1 2)))
+
+;; Taken from Let Over Lambda
+(defmacro defmacro/g! (name args &rest body)
+  (let ((syms (remove-duplicates
+                (remove-if-not #'g!-symbol?
+                               (flatten body)))))
+    `(defmacro ,name ,args
+       (let ,(mapcar
+               (lambda (s)
+                 `(,s (gensym ,(subseq
+                                 (symbol-name s)
+                                 2))))
+               syms)
+         ,@body))))
+
+;; Taken from Let Over Lambda
+(defun o!-symbol? (s)
+  "Determine whether s is an 'o-bang' symbol.
+   An o-bang symbol is a symbol that starts with 'O!' and is at least 3
+   characters long."
+  (and (symbolp s)
+       (> (length (symbol-name s)) 2)
+       (string= (symbol-name s)
+                "O!"
+                :start1 0
+                :end1 2)))
+
+;; Taken from Let Over Lambda
+(defun o!-to-g!-symbol (s)
+  "Converts an 'O-bang' symbol to a 'G-bang' symbol."
+  (symb "G!"
+        (subseq (symbol-name s) 2)))
+
+;; Taken from Let Over Lambda
+(defmacro defmacro! (name args &rest body)
+  "Defines a macro supporting 'o-bang' and 'g-bang' symbols.
+   A g-bang symbol is defined by the function g!-symbol?
+   An o-bang symbol is defined by the function o!-symbol?
+   G-bang symbols that appear in the body of this macro will be replaced with
+   a gensym, and so guarantee that they will not cause variable capture
+   problems.
+   O-bang symbols are replaced with G-bang symbols, and indicate that such
+   symbols should only be evaluated once."
+  (let* ((os (remove-if-not #'o!-symbol? args))
+         (gs (mapcar #'o!-to-g!-symbol os)))
+    `(defmacro/g! ,name ,args
+       `(let ,(mapcar #'list (list ,@gs) (list ,@os))
+          ,(progn ,@body)))))
