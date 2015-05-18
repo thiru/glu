@@ -43,4 +43,5 @@
            :lrec
            :ttrav
            :trec
+           :g!-symbol?
            :defmacro!))
