@@ -494,7 +494,8 @@
 
 ;; Taken from Let Over Lambda (Daniel Herring's nestable suggestion)
 (defun sharp-double-quote-reader (stream sub-char numarg)
-  "Facilitates creating strings that have double-quote and backslashes without escaping."
+  "Facilitates creating strings that have double-quote and backslashes
+   without escaping."
   (declare (ignore sub-char numarg))
   (let (chars (state 'normal) (depth 1))
     (loop do
@@ -538,8 +539,8 @@
   "Facilitates creating strings with a user-defined terminator.
    For example:
      #>END
-     Any characters can be placed here. The only thing that will terminate the reading of this
-     string is...END"
+     Any characters can be placed here. The only thing that will terminate the
+     reading of this string is...END"
   (declare (ignore sub-char numarg))
   (let (chars)
     (do ((curr (read-char stream)
@@ -566,3 +567,65 @@
           'string)))))
 (set-dispatch-macro-character
   #\# #\> #'sharp-greater-than-reader)
+
+;; Taken from Let Over Lambda
+(defun segment-reader (stream delimiter num-segments)
+  "Divides the characters in `stream` into `num-segments` segments.
+   The divisions are defined by `delimiter`."
+  (if (> num-segments 0)
+    (let ((chars))
+      (do ((curr (read-char stream)
+                 (read-char stream)))
+          ((char= delimiter curr))
+        (push curr chars))
+      (cons (coerce (nreverse chars) 'string)
+            (segment-reader stream delimiter (- num-segments 1))))))
+
+;; Taken from Let Over Lambda
+#+cl-ppcre
+(defmacro! match-mode-ppcre-lambda-form (g!args g!mods)
+  "Facilitates regular expressions used matching."
+  ``(lambda (,',g!str)
+      (cl-ppcre:scan
+        ,(if (zerop (length ,g!mods))
+           (car ,g!args)
+           (format nil "(?~a)~a" ,g!mods (car ,g!args)))
+        ,',g!str)))
+
+;; Taken from Let Over Lambda
+#+cl-ppcre
+(defmacro! subst-mode-ppcre-lambda-form (g!args)
+  "Facilitates regular expressions used for substition."
+  ``(lambda (,',g!str)
+      (cl-ppcre:regex-replace-all
+        ,(car ,g!args)
+        ,',g!str
+        ,(cadr ,g!args))))
+
+;; Taken from Let Over Lambda
+#+cl-ppcre
+(defun sharp-tilde-reader (stream sub-char numarg)
+  "Facilitates defining regular expressions such as:
+   * #~m/abc
+   * #~s/abc/def"
+  (declare (ignore sub-char numarg))
+  (let ((mode-char (read-char stream)))
+    (cond
+      ((char= mode-char #\m)
+         (match-mode-ppcre-lambda-form
+           (segment-reader stream
+                           (read-char stream)
+                           1)
+           (coerce (loop for c = (read-char stream)
+                         while (alpha-char-p c)
+                         collect c
+                         finally (unread-char c stream))
+                   'string)))
+      ((char= mode-char #\s)
+         (subst-mode-ppcre-lambda-form
+           (segment-reader stream
+                           (read-char stream)
+                           2)))
+      (t (error "Unknown #~~ mode character")))))
+#+cl-ppcre
+(set-dispatch-macro-character #\# #\~ #'sharp-tilde-reader)
