@@ -444,7 +444,7 @@
                 :end1 2)))
 
 ;; Taken from Let Over Lambda
-(defmacro defmacro/g! (name args &rest body)
+(defmacro defmacro! (name args &rest body)
   (let ((syms (remove-duplicates
                 (remove-if-not #'g!-symbol?
                                (flatten body)))))
@@ -476,7 +476,8 @@
         (subseq (symbol-name s) 2)))
 
 ;; Taken from Let Over Lambda
-(defmacro defmacro! (name args &rest body)
+;; NOTE: This doesn't seem to work (G!X undefined error)
+(defmacro defmacro/o! (name args &rest body)
   "Defines a macro supporting 'o-bang' and 'g-bang' symbols.
    A g-bang symbol is defined by the function g!-symbol?
    An o-bang symbol is defined by the function o!-symbol?
@@ -487,6 +488,6 @@
    symbols should only be evaluated once."
   (let* ((os (remove-if-not #'o!-symbol? args))
          (gs (mapcar #'o!-to-g!-symbol os)))
-    `(defmacro/g! ,name ,args
+    `(defmacro! ,name ,args
        `(let ,(mapcar #'list (list ,@gs) (list ,@os))
           ,(progn ,@body)))))
