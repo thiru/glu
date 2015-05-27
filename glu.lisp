@@ -473,7 +473,7 @@
 (set-dispatch-macro-character
   #\# #\" #'sharp-double-quote-reader)
 
-;; Take from Let Over Lambda (Martin Dirichs' version)
+;; Taken from Let Over Lambda (Martin Dirichs' version)
 (defun sharp-greater-than-reader (stream sub-char numarg)
   "Facilitates creating strings with a user-defined terminator.
    For example:
