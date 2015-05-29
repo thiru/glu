@@ -424,6 +424,12 @@
                         (λ () (if (cdr tree) (self (cdr tree))))))))
     #'self))
 
+;; Taken from PCL, but which in turn is based on On Lisp
+(defmacro with-gensyms ((&rest names) &body body)
+  "Expands into a let form that creates gensymbed symbols defined in `names`."
+  `(let ,(loop for n in names collect `(,n (gensym)))
+     ,@body))
+
 ;; Taken from PCL
 (defmacro labeled-time (form)
   "Shows timing info via (time), prefixed with the form it's called for."

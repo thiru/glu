@@ -43,5 +43,7 @@
            :lrec
            :ttrav
            :trec
-           :g!-symbol?
-           :defmacro!))
+           :labeled-time
+           :with-gensyms
+           :sharp-double-quote-reader
+           :sharp-greater-than-reader))
