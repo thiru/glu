@@ -409,6 +409,12 @@
     #'self))
 
 (defmacro with-gensyms ((&rest names) &body body)
-  "Expands into a let form that creates gensymbed symbols defined in `names`."
-  `(let ,(loop for n in names collect `(,n (gensym)))
+  "Expands into a let form that creates gensymbed symbols defined in `names`.
+   The names of the symbols are included as a prefix to the gensymed name,
+   for debugging purposes.
+   For example:
+       (with-gensyms (one two) (values one two))
+       ; #:ONE1234
+       ; #:TWO1235"
+  `(let ,(loop for n in names collect `(,n (gensym (mkstr ',n))))
      ,@body))
