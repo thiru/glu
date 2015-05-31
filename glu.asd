@@ -1,7 +1,7 @@
 ;;;; Utils build configuration
 
 (asdf:defsystem :glu
-  :version "0.1"
+  :version "0.2"
   :description "Global Lisp utilties that should be useful for most of my apps."
   :author "Thirushanth Thirunavukarasu <thiru0130@gmail.com>"
   :license "GPLv2"
@@ -10,5 +10,6 @@
                (:static-file "LICENSE")
                (:static-file "EULA")
                (:file "package")
-               (:file "glu")))
-
+               (:file "glu")
+               (:file "on-lisp")
+               (:file "let-over-lambda")))
