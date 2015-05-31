@@ -46,4 +46,5 @@
            :labeled-time
            :with-gensyms
            :sharp-double-quote-reader
-           :sharp-greater-than-reader))
+           :sharp-greater-than-reader
+           :dlambda))

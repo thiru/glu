@@ -512,3 +512,37 @@
           'string)))))
 (set-dispatch-macro-character
   #\# #\> #'sharp-greater-than-reader)
+
+;; Taken from Let Over Lambda
+(defmacro dlambda (&rest ds)
+  "The d in dlambda stands for dispatching or destructuring.
+   A closure can be used a simpler alternative to an object. However, an
+   object with only a single method. dlambda supports the possibility of
+   specifying multiple methods.
+   dlambda expands into a lambda that can be destructured into executing
+   different 'methods' depending on the keyword arguments given to it.
+   For example:
+   (setf (symbol-function 'count-test)
+     (let ((count 0))
+       (dlambda
+         (:reset () (setf count 0)) ; Method with no args
+         (:inc (n) (incf count n)) ; Method with 1 arg
+         (:dec (n) (decf count n))
+         ;; The following will be called when no keyword arguments are
+         ;; specified. This could be a good place to have a textual
+         ;; representation of the object.
+         (t ()
+            (format nil \"COUNT: ~a\" count)))))"
+  (with-gensyms (args)
+    `(lambda (&rest ,args)
+       (case (car ,args)
+         ,@(mapcar
+             (lambda (d)
+               `(,(if (eq t (car d))
+                    t
+                    (list (car d)))
+                 (apply (lambda ,@(cdr d))
+                        ,(if (eq t (car d))
+                           args
+                           `(cdr ,args)))))
+             ds)))))
