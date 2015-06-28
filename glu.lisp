@@ -23,3 +23,11 @@
   `(progn
     (format *trace-output* "~2&~a" ',form)
     (time ,form)))
+
+(defmacro -> (obj slot)
+  "Gets the value of a slot."
+  `(slot-value ,obj ',slot))
+
+(defmacro => (obj slot val)
+  "Sets the value of a slot."
+  `(setf (,(symb (type-of (symbol-value obj)) "-" slot) ,obj) ,val))
