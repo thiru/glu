@@ -2,49 +2,50 @@
 
 (defpackage :glu
   (:use :cl)
-  (:export :*english-list*
-           :last1
-           :single?
-           :append1
-           :conc1
-           :mklist
-           :longer?
-           :filter
-           :group
-           :flatten
-           :prune
-           :find2
-           :before?
+  (:export :!
+           :*!equivs*
+           :*english-list*
            :after?
-           :dup?
-           :split-if
+           :append1
+           :before?
            :best
-           :most
-           :mostn
+           :compose
+           :conc1
+           :def!
+           :dlambda
+           :dup?
+           :explode
+           :fif
+           :filter
+           :find2
+           :finter
+           :flatten
+           :fmt
+           :funion
+           :group
+           :labeled-time
+           :last1
+           :longer?
+           :lrec
            :map->
-           :mapa-b
            :map0-n
            :map1-n
-           :mappend
+           :mapa-b
            :mapcars
-           :rmapcar
-           :mkstr
-           :symb
-           :reread
-           :explode
-           :*!equivs*
-           :!
-           :def!
+           :mappend
            :memoize
-           :compose
-           :fif
-           :finter
-           :funion
-           :lrec
-           :ttrav
-           :trec
-           :labeled-time
-           :with-gensyms
+           :mklist
+           :mkstr
+           :most
+           :mostn
+           :prune
+           :reread
+           :rmapcar
            :sharp-double-quote-reader
            :sharp-greater-than-reader
-           :dlambda))
+           :single?
+           :split-if
+           :symb
+           :trec
+           :ttrav
+           :with-gensyms))

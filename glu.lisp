@@ -14,8 +14,7 @@
 (defparameter *english-list*
   "~{~#[~;~a~;~a and ~a~:;~@{~a~#[~; and ~:;, ~]~}~]~}"
   "A control string to format a list of items in a friendly manner.
-   E.g. '1 and 2', or '1, 2 and 3'.
-   This was taken from PCL.")
+   E.g. '1 and 2', or '1, 2 and 3'.")
 
 ;; Taken from PCL
 (defmacro labeled-time (form)
@@ -31,3 +30,7 @@
 (defmacro => (obj slot val)
   "Sets the value of a slot."
   `(setf (,(symb (type-of (symbol-value obj)) "-" slot) ,obj) ,val))
+
+(defmacro fmt (control-string &rest args)
+  "Convenience macro to format a string to standard out."
+  `(format t ,control-string ,@args))

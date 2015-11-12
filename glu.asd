@@ -1,7 +1,7 @@
 ;;;; Utils build configuration
 
 (asdf:defsystem :glu
-  :version "0.2"
+  :version "0.3"
   :description "Global Lisp utilties that should be useful for most of my apps."
   :author "Thirushanth Thirunavukarasu <thiru0130@gmail.com>"
   :license "GPLv2"
