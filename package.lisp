@@ -1,5 +1,7 @@
 ;;;; Utils package definitions
 
+(in-package :common-lisp-user)
+
 (defpackage :glu
   (:use :cl)
   (:export :!
