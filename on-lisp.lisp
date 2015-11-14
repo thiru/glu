@@ -10,7 +10,7 @@
 (defun last1 (lst)
   "Get the last item in lst. If lst is not a list it simply returns it."
   (if (listp lst)
-    (car (last lst)) 
+    (car (last lst))
     lst))
 
 (defun single? (lst)

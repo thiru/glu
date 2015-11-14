@@ -3,10 +3,11 @@
 (in-package :common-lisp-user)
 
 (defpackage :glu
-  (:use :cl)
+  (:use :cl :local-time)
   (:export :!
            :*!equivs*
            :*english-list*
+           :*log-format-time*
            :after?
            :append1
            :before?
@@ -27,6 +28,7 @@
            :group
            :labeled-time
            :last1
+           :logm
            :longer?
            :lrec
            :map->
