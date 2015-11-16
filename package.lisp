@@ -23,7 +23,6 @@
            :find2
            :finter
            :flatten
-           :fmt
            :funion
            :group
            :labeled-time
@@ -45,6 +44,7 @@
            :prune
            :reread
            :rmapcar
+           :sf
            :sharp-double-quote-reader
            :sharp-greater-than-reader
            :single?

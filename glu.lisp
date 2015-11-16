@@ -34,8 +34,8 @@
   "Sets the value of a slot."
   `(setf (,(symb (type-of (symbol-value obj)) "-" slot) ,obj) ,val))
 
-(defmacro fmt (control-string &rest args)
-  "Convenience macro to format a string."
+(defmacro sf (control-string &rest args)
+  "Convenience macro to format a string. `sf` stands for 'string format'."
   `(format nil ,control-string ,@args))
 ;;; Generic Utils --------------------------------------------------------------
 
