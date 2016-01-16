@@ -32,7 +32,7 @@
 
 (defmacro => (obj slot val)
   "Sets the value of a slot."
-  `(setf (,(symb (type-of (symbol-value obj)) "-" slot) ,obj) ,val))
+  `(setf (slot-value ,obj ',slot) ,val))
 
 (defmacro sf (control-string &rest args)
   "Convenience macro to format a string. `sf` stands for 'string format'."
