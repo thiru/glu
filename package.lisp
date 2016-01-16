@@ -8,6 +8,8 @@
            :*!equivs*
            :*english-list*
            :*log-format-time*
+           :->
+           :=>
            :after?
            :append1
            :before?
