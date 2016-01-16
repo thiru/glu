@@ -1,6 +1,6 @@
 ;;;; Utils package definitions
 
-(in-package :common-lisp-user)
+(in-package :cl-user)
 
 (defpackage :glu
   (:use :cl :local-time)

@@ -1,5 +1,7 @@
 ;;;; Utils build configuration
 
+(in-package :cl-user)
+
 (asdf:defsystem :glu
   :version "0.4"
   :description "Global Lisp utilties that should be useful for most of my apps."
