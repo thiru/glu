@@ -34,6 +34,13 @@
   "Sets the value of a slot."
   `(setf (slot-value ,obj ',slot) ,val))
 
+(defmacro empty? (val)
+  "Determine whether 'val' is considered empty. I.e. is an empty sequence
+  or an empty string."
+  `(or (null ,val)
+       (and (listp ,val) (= 0 (length ,val)))
+       (and (stringp ,val) (= 0 (length, val)))))
+
 (defmacro sf (control-string &rest args)
   "Convenience macro to format a string. `sf` stands for 'string format'."
   `(format nil ,control-string ,@args))

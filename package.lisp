@@ -19,6 +19,7 @@
            :def!
            :dlambda
            :dup?
+           :empty?
            :explode
            :fif
            :filter
