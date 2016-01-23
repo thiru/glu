@@ -14,7 +14,6 @@
            :append1
            :before?
            :best
-           :compose
            :conc1
            :def!
            :dlambda
@@ -25,7 +24,6 @@
            :filter
            :find2
            :finter
-           :flatten
            :funion
            :group
            :labeled-time
@@ -38,7 +36,6 @@
            :map1-n
            :mapa-b
            :mapcars
-           :mappend
            :memoize
            :mklist
            :mkstr
@@ -54,5 +51,4 @@
            :split-if
            :symb
            :trec
-           :ttrav
-           :with-gensyms))
+           :ttrav))

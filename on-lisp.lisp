@@ -58,15 +58,6 @@
                    (nreverse (cons source acc))))))
     (if source (rec source nil) nil)))
 
-(defun flatten (x)
-  "Makes x into a flat list, removing any potentially nested lists.
-   If x is not a list it's turned into one."
-  (labels ((rec (x acc)
-             (cond ((null x) acc)
-                   ((atom x) (cons x acc))
-                   (t (rec (car x) (rec (cdr x) acc))))))
-    (rec x nil)))
-
 (defun prune (test tree)
   "Removes items in tree (traversing nested lists), where test returns true for
    the item."
@@ -216,10 +207,6 @@
    specified sequence."
   (mapa-b fn 1 n))
 
-(defun mappend (fn &rest lsts)
-  "A non-destructive alternate to mapcan."
-  (apply #'append (apply #'mapcar fn lsts)))
-
 (defun mapcars (fn &rest lsts)
   "Behaves like mapcar but works with multiple list arguments."
   (let ((result nil))
@@ -286,22 +273,6 @@
          (if win
              val
              (setf (gethash args cache) (apply fn args)))))))
-
-(defun compose (&rest fns)
-  "Returns a function which is a composition of the given functions.
-   The last given fucntion is called first, and the first one given called
-   last.
-   All the given functions must take one argument except the last, which has
-   no restrictions. Whatever arguments the last given function takes, so will
-   the composed function."
-  (if fns
-      (let ((fn1 (car (last fns)))
-            (fns (butlast fns)))
-        (λ (&rest args)
-           (reduce #'funcall fns
-                   :from-end t
-                   :initial-value (apply fn1 args))))
-      #'identity))
 
 (defun fif (if then &optional else)
   "fif stands for 'function if'. It encapsulates the pattern:
@@ -407,14 +378,3 @@
                         (λ () (self (car tree)))
                         (λ () (if (cdr tree) (self (cdr tree))))))))
     #'self))
-
-(defmacro with-gensyms ((&rest names) &body body)
-  "Expands into a let form that creates gensymbed symbols defined in `names`.
-   The names of the symbols are included as a prefix to the gensymed name,
-   for debugging purposes.
-   For example:
-       (with-gensyms (one two) (values one two))
-       ; #:ONE1234
-       ; #:TWO1235"
-  `(let ,(loop for n in names collect `(,n (gensym (mkstr ',n))))
-     ,@body))
