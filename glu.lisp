@@ -44,6 +44,12 @@
 (defmacro sf (control-string &rest args)
   "Convenience macro to format a string. `sf` stands for 'string format'."
   `(format nil ,control-string ,@args))
+
+(defmacro str (first &rest rest)
+  "Convenience macro to concatenate a list of strings or objects."
+  (if rest
+      `(format nil "~A~{~A~}" ,first ',rest)
+      `(format nil "~A" ,first)))
 ;;; Generic Utils --------------------------------------------------------------
 
 ;;; Logging --------------------------------------------------------------------
