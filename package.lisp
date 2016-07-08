@@ -49,7 +49,6 @@
            :sharp-greater-than-reader
            :single?
            :split-if
-           :str
            :symb
            :trec
            :ttrav))
