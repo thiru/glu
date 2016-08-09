@@ -5,8 +5,6 @@
 
 ;;; List-based:
 
-(proclaim '(inline last1 single? append1 conc1 mklist))
-
 (defun last1 (lst)
   "Get the last item in lst. If lst is not a list it simply returns it."
   (if (listp lst)

@@ -20,6 +20,7 @@
            :dup?
            :empty?
            :explode
+           :failed?
            :fif
            :filter
            :find2
@@ -28,6 +29,7 @@
            :group
            :labeled-time
            :last1
+           :levels
            :logm
            :longer?
            :lrec
@@ -41,7 +43,12 @@
            :mkstr
            :most
            :mostn
+           :new-r
            :prune
+           :r
+           :r-data
+           :r-level
+           :r-message
            :reread
            :rmapcar
            :sf
@@ -49,6 +56,8 @@
            :sharp-greater-than-reader
            :single?
            :split-if
+           :succeeded?
            :symb
+           :to-string
            :trec
            :ttrav))
