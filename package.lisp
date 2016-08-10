@@ -44,6 +44,7 @@
            :most
            :mostn
            :new-r
+           :non-empty?
            :prune
            :r
            :r-data

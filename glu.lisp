@@ -41,6 +41,11 @@
        (and (listp ,val) (= 0 (length ,val)))
        (and (stringp ,val) (= 0 (length, val)))))
 
+(defmacro non-empty? (val)
+  "Determine whether VAL is not empty. I.e. it is either a non-nil atom, a
+   non-empty list, or a non-empty string."
+  `(not (empty? ,val)))
+
 (defmacro sf (control-string &rest args)
   "Convenience macro to format a string. `sf` stands for 'string format'."
   (if (listp control-string)
