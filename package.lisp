@@ -31,6 +31,7 @@
            :last1
            :levels
            :logm
+           :loose-parse-int
            :longer?
            :lrec
            :map->

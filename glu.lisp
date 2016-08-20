@@ -46,6 +46,19 @@
    non-empty list, or a non-empty string."
   `(not (empty? ,val)))
 
+(defmacro loose-parse-int (str &key (fallback 0))
+  "Very lenient parsing of STR to an integer."
+  `(cond ((typep ,str 'integer)
+          ,str)
+         ((empty? ,str)
+          ,fallback)
+         (t
+          (or (parse-integer (if (typep ,str 'string)
+                                 ,str
+                                 (to-string ,str))
+                             :junk-allowed t)
+              ,fallback))))
+
 (defmacro sf (control-string &rest args)
   "Convenience macro to format a string. `sf` stands for 'string format'."
   (if (listp control-string)
