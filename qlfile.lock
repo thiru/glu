@@ -1,0 +1,10 @@
+("quicklisp" .
+ (:class qlot.source.ql:source-ql-all
+  :initargs (:project-name "quicklisp" :%version :latest)
+  :version "2016-06-28"))
+("glu" .
+ (:class qlot.source.git:source-git
+  :initargs (:project-name "glu" :remote-url "https://github.com/thiru/glu.git")
+  :version "git-d653843feb952e5169de051033b66d0feb621b58"
+  :remote-url "https://github.com/thiru/glu.git"
+  :ref "d653843feb952e5169de051033b66d0feb621b58"))
