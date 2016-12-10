@@ -14,5 +14,6 @@
                (:static-file "EULA")
                (:file "package")
                (:file "glu")
+               (:file "rx")
                (:file "on-lisp")
                (:file "let-over-lambda")))
