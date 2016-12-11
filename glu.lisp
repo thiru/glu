@@ -26,6 +26,37 @@
 ;;; Taken from PCL -------------------------------------------------------------
 
 ;;; Generic Utils --------------------------------------------------------------
+(defun 1st (obj)
+  "Gets the first item in OBJ if it's a list, otherwise OBJ is simply returned."
+  (if (listp obj) (first obj) obj))
+
+(defun 2nd (obj &optional fallback)
+  "Gets the second item in OBJ if it's a list of at least two items, otherwise
+   FALLBACK."
+  (cond ((atom obj)
+         fallback)
+        ((and (listp obj) (> (length obj) 1))
+         (second obj))
+        (t fallback)))
+
+(defun 3rd (obj &optional fallback)
+  "Gets the third item in OBJ if it's a list of at least three items, otherwise
+   FALLBACK."
+  (cond ((atom obj)
+         fallback)
+        ((and (listp obj) (> (length obj) 2))
+         (third obj))
+        (t fallback)))
+
+(defun 4th (obj &optional fallback)
+  "Gets the fourth item in OBJ if it's a list of at least three items, otherwise
+   FALLBACK."
+  (cond ((atom obj)
+         fallback)
+        ((and (listp obj) (> (length obj) 3))
+         (fourth obj))
+        (t fallback)))
+
 (defmacro -> (obj slot)
   "Gets the value of a slot."
   `(slot-value ,obj ',slot))
