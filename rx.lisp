@@ -13,55 +13,60 @@
   * takes observable
   * returns observable
 
-(defun rx-map (observable map-fn)
-  "Reactive Extensions map operator."
-  (lambda () 23)
-  )
+* Sample call:
+  `(rx-subscribe (rx-map (rx-range 3 8) #'1+) rx-print-observer)`
 
-(defun rx-map (map-fn next &key on-error on-complete)
-  "Reactive Extensions map operator."
-  43
-  ; return teardown func
- )
-
-(defun rx-subscribe (next &key error complete)
-  "Reactive Extensions subscribe."
-  )
+* Observer will no longer pass values after:
+  * (error) is called
+    * is this a good idea though?
+  * (complete) is called
+  * (unsubscribe) is called
 ||#
 
-(defstruct observer
+(defun noop (&rest args)
+  "Do nothing."
+  (declare (ignore args))
+  nil)
+
+;; TODO: handle setting complete? flag
+(defstruct rx-observable
+  "Reactive Extensions observable."
+  (observable-fn #'noop)
+  complete?)
+
+;; TODO: overloads to take function(s) instead of observer
+(defmethod rx-subscribe ((observable rx-observable) (observer rx-observer))
+  (funcall (rx-observable-observable-fn observable) observer))
+
+(defstruct rx-observer
   "Reactive Extensions observer."
-  closed?
-  )
+  (next #'noop)
+  (error #'noop)
+  (complete #'noop))
 
-(defgeneric rx-next (observer value)
-  (:documentation "Get the next item from the observable (TODO)."))
+(defparameter rx-print-observer
+  (make-rx-observer :next (lambda (x) (format t "NEXT: ~A~%" x))
+                    :error (lambda (x) (format t "ERROR: ~A~%" x))
+                    :complete (lambda () (format t "COMPLETE~%")))
+  "An Rx observer that simply prints everything it's given to standard out.")
 
-(defgeneric rx-error (observer err)
-  (:documentation "Report error (TODO)"))
-
-(defgeneric rx-complete (observer)
-  (:documentation "Report complete (TODO)")
-  )
-
-(defmethod rx-next ((obs observer) (val t))
-  (format t "NEXT: ~A~%" val))
-
-(defmethod rx-complete ((obs observer))
-  (setf (observer-closed? obs) t)
-  (format t "Complete~%"))
-
-(defmethod rx-error ((obs observer) (err t))
-  (setf (observer-closed? obs) t)
-  (format t "Error: ~A~%" err)
-  )
-
-(defun rx-range (observer start end)
+(defun rx-range (start end)
   "Creates an observable range of numbers."
-  (dotimes (i end)
-    (rx-next observer i)
-    )
-  (rx-complete observer)
-  (lambda () t)
-  )
+  (make-rx-observable
+    :observable-fn
+    (lambda (observer)
+      (dotimes (i end)
+        (funcall (rx-observer-next observer) i))
+      (funcall (rx-observer-complete observer))
+      #'noop)))
 
+(defun rx-map (observable map-fn)
+  "Reactive Extensions map operator."
+  (make-rx-observable
+    :observable-fn
+    (lambda (observer)
+      (rx-subscribe observable
+                    (make-rx-observer
+                      :next (lambda (x) (funcall (rx-observer-next observer) (funcall map-fn x)))
+                      :error (lambda (x) (funcall (rx-observer-error observer) x))
+                      :complete (lambda () (funcall (rx-observer-complete observer))))))))
